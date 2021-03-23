@@ -6,7 +6,7 @@
 3. install nodejs/npm
 4. npm i
 5. npm i pm2 livescript -g
-6. lsc -c index.ls
+6. lsc -c solrpc.ls
 7. pm2 start solrpc.js
 
 
