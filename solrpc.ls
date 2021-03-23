@@ -2,6 +2,7 @@ require! {
     \@solana/web3.js
     \express
     \body-parser
+    \bignumber.js
 }
 
 cb = console.log
@@ -11,6 +12,7 @@ as-callback = (p, cb)->
     p.catch cb
     
 get-lamports = (amount)->
+    return new bignumber(amount).times(10^9).to-fixed! if amount.to-string!.index-of('.') > -1
     amount
 
 send-transaction = ({ sender-private-key, recipient, amount, rpc }, cb)->
@@ -46,10 +48,12 @@ send-transaction = ({ sender-private-key, recipient, amount, rpc }, cb)->
 
 
 as-rest = (func)-> (req, res)->
-    err, data <- func req.body
-    return res.status(400).send("#{err}") if err?
-    res.send data
-
+    try 
+        err, data <- func req.body
+        return res.status(400).send("#{err}") if err?
+        res.send data
+    catch err
+        res.status(500).send("#{err}")
 
 app = express!
 app.use body-parser.json!
